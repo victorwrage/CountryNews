@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/hot_title_lay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/avatar_background"
+                android:padding="4dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/hot_author_avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/hot_s" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/hot_author_name"
+                        style="@style/essay_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="苹果日报 台湾 " />
+
+                    <TextView
+                        android:id="@+id/hot_essay_extra"
+                        style="@style/essay_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="上传了 6张新照片 " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/hot_essay_time"
+                        style="@style/essay_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="27分钟 " />
+
+                    <ImageView
+                        android:id="@+id/hot_essay_source"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/gray_radius" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/hot_essay_btn_extra"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:src="@drawable/good" />
+
+        <TextView
+            android:id="@+id/hot_essay_content"
+            style="@style/essay_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hot_title_lay"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:text="每天吃一样食物，这我不行" />
+
+        <net.easyyy.countrynews.customView.FlowImageLayout
+            android:id="@+id/hot_essay_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hot_essay_content"
+            android:layout_margin="5dp" />
+
+        <RelativeLayout
+            android:id="@+id/hot_statistic_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hot_essay_img"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/hot_essay_emotion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/hot_essay_emotion_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/hot_essay_emotion"
+                android:layout_marginLeft="5dp"
+                android:text="300人" />
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentRight="true"
+               android:layout_marginRight="5dp">
+               <TextView
+                   android:id="@+id/hot_essay_comment_count"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/hot_essay_emotion"
+                   android:layout_marginLeft="5dp"
+                   android:text="5 条评论" />
+               <TextView
+                   android:id="@+id/hot_essay_share_count"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/hot_essay_emotion"
+                   android:layout_marginLeft="5dp"
+                   android:text="5 条分享" />
+               <TextView
+                   android:id="@+id/hot_essay_look_count"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/hot_essay_emotion"
+                   android:layout_marginLeft="5dp"
+                   android:text="5000 次浏览" />
+           </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hot_statistic_lay"
+            android:layout_marginTop="5dp">
+
+            <LinearLayout
+                android:id="@+id/hot_essay_good"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/good" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="赞" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hot_essay_comment"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/comment" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="评论" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hot_essay_share"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/share" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="分享" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

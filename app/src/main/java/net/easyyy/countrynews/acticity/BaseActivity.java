@@ -9,6 +9,8 @@ import net.easyyy.countrynews.ONApplication;
 import net.easyyy.countrynews.R;
 import net.easyyy.countrynews.customView.ProgressBarItem;
 import net.easyyy.countrynews.fragment.BaseFragment;
+import net.easyyy.countrynews.fragment.FragmentLogin;
+import net.easyyy.countrynews.fragment.FragmentMain;
 import net.easyyy.countrynews.util.DoubleConfirm;
 
 import java.text.SimpleDateFormat;
@@ -25,6 +27,9 @@ import java.util.concurrent.Executor;
 public class BaseActivity extends FragmentActivity {
 
     protected Executor executor;
+
+    protected FragmentMain fragment0;
+    protected FragmentLogin fragment1;
 
     protected static final String PAGE_0 = "page_0";
     protected static final String PAGE_1 = "page_1";

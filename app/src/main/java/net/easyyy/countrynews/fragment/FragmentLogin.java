@@ -68,7 +68,6 @@ public class FragmentLogin extends BaseFragment implements IUserView {
     @Bind(R.id.login_auto_activity)
     RelativeLayout login_auto_activity;
 
-
     @Bind(R.id.login_register_tv)
     TextView login_register_tv;
     @Bind(R.id.login_forget_tv)
@@ -84,7 +83,7 @@ public class FragmentLogin extends BaseFragment implements IUserView {
             super.handleMessage(msg);
             switch (msg.what) {
                 case INIT_FINISHED:
-                    VToast.toast(getContext(), "你好 " + Constant.user_info.optString("name"));
+                    VToast.toast(getContext(), "welcome " + Constant.user_info.optString("name"));
                     hidSoftInput();
                     listener.gotoMain();
                     break;
@@ -203,6 +202,8 @@ public class FragmentLogin extends BaseFragment implements IUserView {
     }
 
     private void Login() {
+        listener.gotoMain();
+
         if (!util.isNetworkConnected(getContext())) {
             VToast.toast(getContext(), "没有网络连接");
             return;
@@ -213,11 +214,13 @@ public class FragmentLogin extends BaseFragment implements IUserView {
             VToast.toast(getContext(), "请输入密码");
         } else {
 
-            showWaitDialog("正在登录");
-            present.initRetrofit(Constant.URL_SHANGTONGTIANXIA, false);
+           // showWaitDialog("正在登录");
+          //  present.initRetrofit(Constant.URL_SHANGTONGTIANXIA, false);
            /* present.QueryLogin(util.UrlEnco(Constant.WDT_SECRET), login_user_et.getText().toString().trim(),
                     util.getMD5(login_password_et.getText().toString().trim()));*/
         }
+
+
     }
 
 

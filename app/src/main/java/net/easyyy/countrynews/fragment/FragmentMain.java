@@ -1,32 +1,36 @@
 package net.easyyy.countrynews.fragment;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.mylhyl.acp.Acp;
-import com.mylhyl.acp.AcpListener;
-import com.mylhyl.acp.AcpOptions;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.socks.library.KLog;
 
 import net.easyyy.countrynews.R;
+import net.easyyy.countrynews.adapter.HotNewsAdapter;
+import net.easyyy.countrynews.bean.HotNewsBean;
+import net.easyyy.countrynews.customView.RecyclerViewWithEmpty;
 import net.easyyy.countrynews.present.QueryPresent;
 import net.easyyy.countrynews.util.Utils;
-import net.easyyy.countrynews.util.VToast;
 import net.easyyy.countrynews.view.IView;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.listener.SaveListener;
+import it.gmariotti.recyclerview.adapter.AlphaAnimatorAdapter;
 
 public class FragmentMain extends BaseFragment implements IView {
 
@@ -35,19 +39,17 @@ public class FragmentMain extends BaseFragment implements IView {
     SharedPreferences sp;
     View view;
 
+    ArrayList<HotNewsBean> data;
+    HotNewsAdapter adapter;
+    @Bind(R.id.hot_news_list)
+    RecyclerViewWithEmpty hot_news_list;
+
+    @Bind(R.id.empty_iv)
+    ImageView empty_iv;
+    @Bind(R.id.empty_tv)
+    TextView empty_tv;
     @Bind(R.id.empty_lay)
     RelativeLayout empty_lay;
-    WebView tbsContent;
-
-    RelativeLayout main_content_lay;
-
-
-/*    @Bind(R.id.slidingLayout)
-    SlidingLayout slidingLayout;*/
-
-    //WebView tbsContent;
-
-    private boolean isInit = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,56 +69,26 @@ public class FragmentMain extends BaseFragment implements IView {
 
     @JavascriptInterface
     private void initView() {
-      /*  RxView.clicks(main_scan_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Scan());
-        RxView.clicks(main_pay_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Pay());*/
-     /*   slidingLayout.setSlidingListener(new SlidingLayout.SlidingListener() {
-            @Override
-            public void onSlidingOffset(View view, float v) {
-                if (v > 60) {
-                    if (tbsContent != null) {
-                        empty_lay.setVisibility(View.VISIBLE);
-                        tbsContent.reload();
-                    }
-                }
-            }
 
-            @Override
-            public void onSlidingStateChange(View view, int i) {
+        adapter = new HotNewsAdapter(data, getContext());
+        hot_news_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+        AlphaAnimatorAdapter animatorAdapter = new AlphaAnimatorAdapter(adapter, hot_news_list);
+        hot_news_list.setEmptyView(empty_lay);
+        hot_news_list.setAdapter(animatorAdapter);
 
-            }
-
-            @Override
-            public void onSlidingChangePointer(View view, int i) {
-
-            }
-        });*/
-    }
-
-
-    private void Pay() {
+        setEmptyStatus(false);
+        adapter.notifyDataSetChanged();
 
     }
 
-    private void Scan() {
-        Acp.getInstance(getContext()).request(new AcpOptions.Builder()
-                        .setPermissions(Manifest.permission.CAMERA)
-          /*      .setDeniedMessage("获取摄像头权限失败")
-                .setDeniedCloseBtn("关闭")
-                .setDeniedSettingBtn("设置")
-                .setRationalMessage("")
-                .setRationalBtn("好")*/
-                        .build(),
-                new AcpListener() {
-                    @Override
-                    public void onGranted() {
+    @Override
+    public void Back() {
+        super.Back();
+    }
 
-                    }
-
-                    @Override
-                    public void onDenied(List<String> permissions) {
-                        VToast.toast(getContext(),"请打开摄像头权限");
-                    }
-                });
+    @Override
+    public void refreshState() {
+        super.refreshState();
     }
 
     private void initDate() {
@@ -124,64 +96,58 @@ public class FragmentMain extends BaseFragment implements IView {
         present = QueryPresent.getInstance(getContext());
         present.setView(FragmentMain.this);
         sp = getContext().getSharedPreferences(COOKIE_KEY, Context.MODE_PRIVATE);
+
+        HotNewsBean hotNewsBean = new HotNewsBean();
+        hotNewsBean.setAuthor_avatar("苹果日报 ");
+        hotNewsBean.setAuthor_name("苹果日报 ");
+        hotNewsBean.setComment_count(200L);
+        hotNewsBean.setEssay_content("苹果日报 ");
+        hotNewsBean.setEssay_create_time(System.currentTimeMillis());
+        hotNewsBean.setEmotion_count(300l);
+
+        hotNewsBean.setAuthor_avatar("http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=java.lang.IllegalStateException%3A%20Can%20not%20perform%20this%20action%20after%20onSaveIn&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=960265520,2932106354&os=2193161758,1915593990&simid=4232287102,954387401&pn=9&rn=1&di=182032548940&ln=1981&fr=&fmq=1508495608622_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fwww.livehacking.com%2Fweb%2Fwp-content%2Fuploads%2F2012%2F12%2Fjava-square.png&rpstart=0&rpnum=0&adpicid=0");
+        hotNewsBean.setEssay_source("http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=java.lang.IllegalStateException%3A%20Can%20not%20perform%20this%20action%20after%20onSaveIn&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=960265520,2932106354&os=2193161758,1915593990&simid=4232287102,954387401&pn=9&rn=1&di=182032548940&ln=1981&fr=&fmq=1508495608622_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fwww.livehacking.com%2Fweb%2Fwp-content%2Fuploads%2F2012%2F12%2Fjava-square.png&rpstart=0&rpnum=0&adpicid=0");
+
+        hotNewsBean.setEssay_tags(new ArrayList<>());
+        hotNewsBean.setEssay_extra("6张照片");
+        hotNewsBean.setEssay_type_extra(0);
+        hotNewsBean.setLook_count(4000l);
+        hotNewsBean.setShare_count(4000l);
+        hotNewsBean.save(getContext(), new SaveListener() {
+            @Override
+            public void onSuccess() {
+                KLog.v("SAVE SUCCESS");
+            }
+
+            @Override
+            public void onFailure(int i, String s) {
+
+            }
+        });
+
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Acp.getInstance(getContext()).request(new AcpOptions.Builder()
-                        .setPermissions(Manifest.permission.INTERNET)
-                /*以下为自定义提示语、按钮文字
-                .setDeniedMessage()
-                .setDeniedCloseBtn()
-                .setDeniedSettingBtn()
-                .setRationalMessage()
-                .setRationalBtn()*/
-                        .build(),
-                new AcpListener() {
-                    @Override
-                    public void onGranted() {
+    protected void setEmptyStatus(boolean isOffLine) {
 
-                    }
-
-                    @Override
-                    public void onDenied(List<String> permissions) {
-                        VToast.toast(getContext(),"没有网络权限");
-                    }
-                });
-
-        if (!isInit) {
-            isInit = true;
-           // main_stub.setVisibility(View.VISIBLE);
-            tbsContent = (WebView) view.findViewById(R.id.tbsContent);
-
-          /*  String str = "http://wdt.qianhaiwei.com/Project/BeforeSea/Shop/app_dis.html?username=" + Constant.user_info.optString("tel") + "&password=" +
-                    util.getMD5(sp.getString("user_pw", "")) + "&key=" + Constant.WDT_KEY + "&company_id="
-                    + Constant.user_info.optString("company_id") + "&url=self";*/
-            tbsContent.loadUrl("http://wdt.qianhaiwei.com/Project/BeforeSea/shoppingMall/index.html?key=L8NNvvqqqZr&company_id=5777#");
-           // tbsContent.loadUrl("http://wdt.qianhaiwei.com/Project/BeforeSea/Shop/index.html?shop=6848&company_id=10");
-       //  tbsContent.loadUrl("http://wdt.qianhaiwei.com/Project/BeforeSea/shoppingMall/index.html?key=L8NNvvqqqZr&company_id=5777#");
-
-            tbsContent.setWebViewClient(new WebViewClient() {
-                @Override
-                public void onPageFinished(WebView webView, String s) {
-                    super.onPageFinished(webView, s);
-             /*   if(str.equals("")) {
-                    str = "javascript:javacalljswith(" + util.UrlEnco(Constant.user_info.optString("tel")) + "," +util.UrlEnco( util.getMD5(sp.getString("user_pw", ""))) + "," +
-                            util.UrlEnco( Constant.user_info.optString("company_id")) + "," + util.UrlEnco(Constant.WDT_KEY) + ")";
-
-                    webView.loadUrl(str);*/
-                    empty_lay.setVisibility(View.GONE);
-                    tbsContent.setVisibility(View.VISIBLE);
-                    //  }
-                }
-
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    return true;
-                }
-            });
+        if (isOffLine) {
+            empty_iv.setImageResource(R.drawable.netword_error);
+            empty_tv.setText("(=^_^=)，粗错了，点我刷新试试~");
+            empty_lay.setEnabled(true);
+            RxView.clicks(empty_iv).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> emptyClick());
+        } else {
+            empty_lay.setEnabled(false);
+            empty_iv.setImageResource(R.drawable.smile);
+            empty_tv.setText("暂时没有文章");
         }
+    }
+
+    protected void emptyClick() {
+        showWaitDialog("正在努力加载...");
+        fetchFromNetWork();
+    }
+
+    private void fetchFromNetWork() {
+
     }
 
 

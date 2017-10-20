@@ -11,26 +11,33 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.socks.library.KLog;
 
 import net.easyyy.countrynews.acticity.BaseActivity;
 import net.easyyy.countrynews.fragment.FragmentLogin;
+import net.easyyy.countrynews.fragment.FragmentMain;
 import net.easyyy.countrynews.present.QueryPresent;
 import net.easyyy.countrynews.util.Constant;
 import net.easyyy.countrynews.util.Utils;
 import net.easyyy.countrynews.util.VToast;
 import net.easyyy.countrynews.view.IFragmentActivity;
+import net.easyyy.countrynews.view.IView;
 
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,7 +48,7 @@ import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
 
-public class MainActivity extends BaseActivity implements IFragmentActivity {
+public class MainActivity extends BaseActivity implements IFragmentActivity,IView {
     public static String RECEIVE_REDIRECT_MESSAGE = "receive_redirect_message";
     protected static final String SUCCESS = "200";
     public LocationClient mLocationClient = null;
@@ -49,11 +56,33 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
 
     private final String COOKIE_KEY = "cookie";
 
-    private final static int SCAN_CLOSED = 20;
-
 
     @Bind(R.id.main_mine_cv)
     ImageView main_mine_cv;
+    @Bind(R.id.main_hot_cv)
+    ImageView main_hot_cv;
+    @Bind(R.id.main_local_cv)
+    ImageView main_local_cv;
+
+    @Bind(R.id.main_hot_tv)
+    TextView main_hot_tv;
+    @Bind(R.id.main_local_tv)
+    TextView main_local_tv;
+    @Bind(R.id.main_mine_tv)
+    TextView main_mine_tv;
+
+    @Bind(R.id.main_mine_lay)
+    LinearLayout main_mine_lay;
+    @Bind(R.id.main_local_lay)
+    LinearLayout main_local_lay;
+    @Bind(R.id.main_hot_lay)
+    LinearLayout main_hot_lay;
+
+    @Bind(R.id.main_bottom_lay)
+    LinearLayout main_bottom_lay;
+
+    @Bind(R.id.main_header_lay)
+    RelativeLayout main_header_lay;
 
     SharedPreferences sp;
     QueryPresent present;
@@ -61,8 +90,6 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
     private static final String ALIAS_KEY = "alias";
     private String SetAlias = "setAlias";
     private static final int MSG_SET_ALIAS = 1001;
-    StringBuffer tip_str;
-    private String type;
 
     BroadcastReceiver receiver_redirect = new BroadcastReceiver() {
         @Override
@@ -126,22 +153,7 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
         initView();
     }
 
-    private void showSuccessDialog(String content, int type) {
-        new MaterialDialog.Builder(MainActivity.this)
-                .title("提示")
-                .content(content)
-                .positiveText(R.string.bga_pp_confirm)
-                .negativeText(R.string.cancle)
-                .autoDismiss(true)
-                .cancelable(false)
-                .onNegative((materialDialog, dialogAction) -> {
-                    //gotoMain();
-                })
-                .onPositive((materialDialog, dialogAction) -> {
 
-                })
-                .show();
-    }
 
     @Override
     protected void onDestroy() {
@@ -192,24 +204,34 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
                 KLog.v("查询出错或查询超时");
             }
         });
-        // BmobUpdateAgent.initAppVersion(context);
+       // BmobUpdateAgent.initAppVersion(context);
         BmobUpdateAgent.update(MainActivity.this);
         startLocation();
 
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
     private void initView() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        fragment1 = new FragmentLogin();
+        cur_page = 1;
+        cur_fragment = fragment1;
+        ft.show(fragment0);
+
+        main_header_lay.setVisibility(View.VISIBLE);
+        main_bottom_lay.setVisibility(View.VISIBLE);
+
+        RxView.clicks(main_mine_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoMine());
+        RxView.clicks(main_hot_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoMain());
+        RxView.clicks(main_local_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoLocal());
+    }
+
+    private void gotoLocal() {
 
     }
 
+    private void gotoMine() {
 
-
+    }
 
     private void gotoPage(int pageId) {
         if (pageId == cur_page) {
@@ -218,6 +240,38 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
         cur_page = pageId;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.hide(cur_fragment);
+
+        switch(pageId){
+            case 0:
+                if (fragment0 == null) {
+                    fragment0 = new FragmentMain();
+                }
+                if (!fragment0.isAdded()) {
+                    ft.add(R.id.fragment_container, fragment0, PAGE_0);
+                } else {
+                    fragment0.refreshState();
+                }
+                cur_fragment = fragment0;
+                ft.show(fragment0);
+                main_header_lay.setVisibility(View.VISIBLE);
+                main_bottom_lay.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                if (fragment1 == null) {
+                    fragment1 = new FragmentLogin();
+                }
+                if (!fragment1.isAdded()) {
+                    ft.add(R.id.fragment_container, fragment1, PAGE_1);
+                } else {
+                    fragment1.refreshState();
+                }
+                cur_fragment = fragment1;
+                ft.show(fragment1);
+                main_header_lay.setVisibility(View.GONE);
+                main_bottom_lay.setVisibility(View.GONE);
+                break;
+
+        }
 
         ft.commitNowAllowingStateLoss();
     }
@@ -288,32 +342,27 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
     }
 
     private void selectTab(int seq) {
-       /* main_mine_cv.setImageDrawable(getResources().getDrawable(R.drawable.geren));
-        main_fortune_cv.setImageDrawable(getResources().getDrawable(R.drawable.caifu));
-        main_nearby_cv.setImageDrawable(getResources().getDrawable(R.drawable.fujin));
-        main_mall_cv.setImageDrawable(getResources().getDrawable(R.drawable.shangcheng));
-        main_fortune_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
-        main_nearby_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
-        main_mall_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
+        main_mine_cv.setImageDrawable(getResources().getDrawable(R.drawable.mine));
+        main_hot_cv.setImageDrawable(getResources().getDrawable(R.drawable.hot));
+        main_local_cv.setImageDrawable(getResources().getDrawable(R.drawable.loc));
+
+        main_mine_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
+        main_local_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
         main_mine_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_tab_txt));
         switch (seq) {
             case 0:
-                main_fortune_cv.setImageDrawable(getResources().getDrawable(R.drawable.caifu_selec));
-                main_fortune_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
+                main_hot_cv.setImageDrawable(getResources().getDrawable(R.drawable.hot_s));
+                main_hot_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
                 break;
             case 1:
-                main_nearby_cv.setImageDrawable(getResources().getDrawable(R.drawable.fujin_selec));
-                main_nearby_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
+                main_local_cv.setImageDrawable(getResources().getDrawable(R.drawable.loc_s));
+                main_local_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
                 break;
             case 2:
-                main_mall_cv.setImageDrawable(getResources().getDrawable(R.drawable.shangcheng_selec));
-                main_mall_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
-                break;
-            case 3:
-                main_mine_cv.setImageDrawable(getResources().getDrawable(R.drawable.geren_selec));
+                main_mine_cv.setImageDrawable(getResources().getDrawable(R.drawable.mine_s));
                 main_mine_tv.setTextColor(getResources().getColor(R.color.shangtongtianx_txt));
                 break;
-        }*/
+        }
     }
 
     @Override
@@ -325,8 +374,8 @@ public class MainActivity extends BaseActivity implements IFragmentActivity {
             }
 
         }
-        gotoPage(2);
-        selectTab(-1);
+        gotoPage(0);
+        selectTab(0);
     }
 
     @Override

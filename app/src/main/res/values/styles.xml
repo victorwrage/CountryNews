@@ -108,4 +108,26 @@
     <item name="slide_id_front_view" type="id"/>
     <item name="slide_id_left_back_view" type="id"/>
     <item name="slide_id_right_back_view" type="id"/>
+
+
+    <style name="essay_title" >
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+
+    </style>
+    <style name="essay_content" >
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_color</item>
+
+    </style>
+    <style name="essay_detail" >
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/gray</item>
+
+    </style>
+    <style name="essay_time" >
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/gray</item>
+
+    </style>
 </resources>

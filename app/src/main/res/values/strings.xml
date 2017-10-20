@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">外国新闻</string>
-    <string name="msg_exit">退出外国新闻吗</string>
+    <string name="app_name">全球日常</string>
+    <string name="msg_exit">退出全球日常吗？</string>
     <string name="scan">正在扫码</string>
     <string name="scan_orc">正在扫描</string>
     <string name="scan_tip"></string>

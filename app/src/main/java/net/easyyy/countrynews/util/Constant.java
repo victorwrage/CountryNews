@@ -14,23 +14,17 @@ import java.util.HashMap;
 
 public class Constant {
 
-    public static final String URL_BAIBAO = "http://www.o2obaibao.com/bsystem/";//百宝
+
     public static final String URL_SHANGTONGTIANXIA = "http://wdt.qianhaiwei.com/ThinkCmf/";//百宝
-    public static final String URL_TONGDUI = "http://wdt.qianhaiwei.com/Curpons/";//通兑
+
 
     public static final String CONSTANT_MERCHANT_ID = "617061910264433";//
     public static final String URL_MESSAGE = "http://c.kf10000.com/";//短信
     public static final String PUBLIC_KEY = "z4sgErHeEww5uwhTrjF6kM5qdKjpifQg6bp2iRAumnvRx7GV57laelZmX1e405QD";//公钥
-    public static final String AID = "17060518292214";//AID
-    public static final String WDT_SECRET = "10d496ypzBenyswInzfrkyrPLgXIz8ykrQjXMAnK5Bz/4Rr+3F7EfSX1k9yY0jbhe0fC2Ceqr+qdll2WvM0+J3xan3Vl4AvqrSoKC5w13zNQKhf6m8mX1m30";//SECRET
-    public static final String WDT_KEY = "VJm6RQQsvvp";//SECRET
 
-    public static final String PUBLIC_BMOB_KEY = "832ec665f9d515517f302be15f6c8bf6";//BMOB APP KEY
 
-    public static final String PUBLIC_OCR_KEY = "RdQ9PnT67K4eyqEOPv6T9ZRH";//baidu ocr api key
-    public static final String PUBLIC_OCR_SECRET = "WCfE8GCjHdrnftXVNbIj1XyRIGeGgHUH";//secret
-    public static final String PUBLIC_TONGDUI_KEY = "X9o6O2038GhkN1OlFfzZLoQncCvE8LENZ2WSYE3pARUFZzP";//通兑key
-    public static final String PUBLIC_SHARE_URL = "http://wdt.qianhaiwei.com/ThinkCmf/index.php?g=Portal&m=Home&a=sshare&rc=";//分享链接
+    public static final String PUBLIC_BMOB_KEY = "2b2eaa87b61dae51703605fe3d630163";//BMOB APP KEY
+
 
 
     public static final String MESSAGE_USER_NAME = "5234TSGF2";//账号
