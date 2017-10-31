@@ -8,13 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.socks.library.KLog;
 
 import net.easyyy.countrynews.R;
 import net.easyyy.countrynews.adapter.HotNewsAdapter;
@@ -22,17 +20,21 @@ import net.easyyy.countrynews.bean.HotNewsBean;
 import net.easyyy.countrynews.customView.RecyclerViewWithEmpty;
 import net.easyyy.countrynews.present.QueryPresent;
 import net.easyyy.countrynews.util.Utils;
+import net.easyyy.countrynews.util.VToast;
 import net.easyyy.countrynews.view.IView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.FindListener;
 import it.gmariotti.recyclerview.adapter.AlphaAnimatorAdapter;
 
-public class FragmentMain extends BaseFragment implements IView {
+public class FragmentMain extends BaseFragment implements IView,HotNewsAdapter.IHotNewsAdapter{
 
     QueryPresent present;
     Utils util;
@@ -51,6 +53,9 @@ public class FragmentMain extends BaseFragment implements IView {
     @Bind(R.id.empty_lay)
     RelativeLayout empty_lay;
 
+    @Bind(R.id.main_add_more)
+    RelativeLayout main_add_more;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,10 +72,15 @@ public class FragmentMain extends BaseFragment implements IView {
         initView();
     }
 
-    @JavascriptInterface
+
     private void initView() {
 
-        adapter = new HotNewsAdapter(data, getContext());
+        VToast.toast(getContext(), "欢迎" + BmobUser.getObjectByKey(getContext(),"nickname"));
+
+        RxView.clicks(main_add_more).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Add());
+
+        data = new ArrayList<>();
+        adapter = new HotNewsAdapter(data, getContext(),FragmentMain.this);
         hot_news_list.setLayoutManager(new LinearLayoutManager(getActivity()));
         AlphaAnimatorAdapter animatorAdapter = new AlphaAnimatorAdapter(adapter, hot_news_list);
         hot_news_list.setEmptyView(empty_lay);
@@ -79,6 +89,11 @@ public class FragmentMain extends BaseFragment implements IView {
         setEmptyStatus(false);
         adapter.notifyDataSetChanged();
 
+        fetchFromNetWork();
+    }
+
+    private void Add() {
+        listener.gotoAdd();
     }
 
     @Override
@@ -97,33 +112,6 @@ public class FragmentMain extends BaseFragment implements IView {
         present.setView(FragmentMain.this);
         sp = getContext().getSharedPreferences(COOKIE_KEY, Context.MODE_PRIVATE);
 
-        HotNewsBean hotNewsBean = new HotNewsBean();
-        hotNewsBean.setAuthor_avatar("苹果日报 ");
-        hotNewsBean.setAuthor_name("苹果日报 ");
-        hotNewsBean.setComment_count(200L);
-        hotNewsBean.setEssay_content("苹果日报 ");
-        hotNewsBean.setEssay_create_time(System.currentTimeMillis());
-        hotNewsBean.setEmotion_count(300l);
-
-        hotNewsBean.setAuthor_avatar("http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=java.lang.IllegalStateException%3A%20Can%20not%20perform%20this%20action%20after%20onSaveIn&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=960265520,2932106354&os=2193161758,1915593990&simid=4232287102,954387401&pn=9&rn=1&di=182032548940&ln=1981&fr=&fmq=1508495608622_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fwww.livehacking.com%2Fweb%2Fwp-content%2Fuploads%2F2012%2F12%2Fjava-square.png&rpstart=0&rpnum=0&adpicid=0");
-        hotNewsBean.setEssay_source("http://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=java.lang.IllegalStateException%3A%20Can%20not%20perform%20this%20action%20after%20onSaveIn&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=960265520,2932106354&os=2193161758,1915593990&simid=4232287102,954387401&pn=9&rn=1&di=182032548940&ln=1981&fr=&fmq=1508495608622_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&objurl=http%3A%2F%2Fwww.livehacking.com%2Fweb%2Fwp-content%2Fuploads%2F2012%2F12%2Fjava-square.png&rpstart=0&rpnum=0&adpicid=0");
-
-        hotNewsBean.setEssay_tags(new ArrayList<>());
-        hotNewsBean.setEssay_extra("6张照片");
-        hotNewsBean.setEssay_type_extra(0);
-        hotNewsBean.setLook_count(4000l);
-        hotNewsBean.setShare_count(4000l);
-        hotNewsBean.save(getContext(), new SaveListener() {
-            @Override
-            public void onSuccess() {
-                KLog.v("SAVE SUCCESS");
-            }
-
-            @Override
-            public void onFailure(int i, String s) {
-
-            }
-        });
 
     }
 
@@ -137,7 +125,7 @@ public class FragmentMain extends BaseFragment implements IView {
         } else {
             empty_lay.setEnabled(false);
             empty_iv.setImageResource(R.drawable.smile);
-            empty_tv.setText("暂时没有文章");
+            empty_tv.setText("暂时没有内容");
         }
     }
 
@@ -147,8 +135,31 @@ public class FragmentMain extends BaseFragment implements IView {
     }
 
     private void fetchFromNetWork() {
+        showWaitDialog("请稍等");
+        BmobQuery<HotNewsBean> query = new BmobQuery<HotNewsBean>();
 
+        query.setLimit(50);
+
+        query.findObjects(getContext(), new FindListener<HotNewsBean>() {
+            @Override
+            public void onSuccess(List<HotNewsBean> list) {
+                data.addAll(list);
+                adapter.notifyDataSetChanged();
+                hideWaitDialog();
+
+
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                hideWaitDialog();
+                VToast.toast(getContext(), "欢迎" + (String) BmobUser.getObjectByKey(getContext(),"username"));
+            }
+        });
     }
 
-
+    @Override
+    public void Detail() {
+        listener.gotoDetail();
+    }
 }

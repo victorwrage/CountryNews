@@ -9,8 +9,11 @@ import net.easyyy.countrynews.ONApplication;
 import net.easyyy.countrynews.R;
 import net.easyyy.countrynews.customView.ProgressBarItem;
 import net.easyyy.countrynews.fragment.BaseFragment;
+import net.easyyy.countrynews.fragment.FragmentAdd;
+import net.easyyy.countrynews.fragment.FragmentDetail;
 import net.easyyy.countrynews.fragment.FragmentLogin;
 import net.easyyy.countrynews.fragment.FragmentMain;
+import net.easyyy.countrynews.fragment.FragmentRegister;
 import net.easyyy.countrynews.util.DoubleConfirm;
 
 import java.text.SimpleDateFormat;
@@ -30,6 +33,9 @@ public class BaseActivity extends FragmentActivity {
 
     protected FragmentMain fragment0;
     protected FragmentLogin fragment1;
+    protected FragmentRegister fragment2;
+    protected FragmentAdd fragment3;
+    protected FragmentDetail fragment4;
 
     protected static final String PAGE_0 = "page_0";
     protected static final String PAGE_1 = "page_1";
@@ -110,10 +116,11 @@ public class BaseActivity extends FragmentActivity {
     public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
         if (paramInt == KeyEvent.KEYCODE_BACK) {
             switch (cur_page) {
-                case 2:
+                case 0:
                     this.double_c.onKeyPressed(paramKeyEvent, this);
                     return true;
                 case 1:
+                case 2:
                 case 3:
                 case 4:
                 case 5:

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -15,7 +16,11 @@ import com.squareup.picasso.Picasso;
 import net.easyyy.countrynews.R;
 import net.easyyy.countrynews.bean.HotNewsBean;
 import net.easyyy.countrynews.customView.FlowImageLayout;
+import net.easyyy.countrynews.fragment.FragmentDetail;
+import net.easyyy.countrynews.fragment.FragmentMain;
+import net.easyyy.countrynews.util.Constant;
 import net.easyyy.countrynews.util.Utils;
+import net.easyyy.countrynews.view.IFragmentActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -32,12 +37,12 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     Context context;
     ArrayList<HotNewsBean> items;
     Utils util;
-
-    public HotNewsAdapter(ArrayList<HotNewsBean> items, Context context) {
+    IHotNewsAdapter listener;
+    public HotNewsAdapter(ArrayList<HotNewsBean> items, Context context, FragmentMain fragment) {
         this.items = items;
         this.context = context;
         util = Utils.getInstance();
-
+        listener = fragment;
     }
 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int VIEW_TYPE) {
@@ -56,24 +61,8 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.hot_author_name.setText(item.getAuthor_name());
         holder.hot_essay_extra.setText(item.getEssay_extra());
 
-        String create_time = "";
-        Long dec = System.currentTimeMillis() - item.getEssay_create_time();
-        if (dec % 1000 * 60 < 3) {
-            create_time = "刚刚";
-        } else if (dec % 1000 * 60 < 60) {
-            create_time = dec % 1000 * 60 + "分钟 ";
-        } else if (dec % 1000 * 60 * 60 < 24) {
-            create_time = dec % 1000 * 60 * 60 + "小时 ";
-        } else if (dec % 1000 * 60 * 60 * 24 < 30) {
-            create_time = dec % 1000 * 60 * 24 + "天 ";
-        } else if (dec % 1000 * 60 * 60 * 24 * 7 < 4) {
-            create_time = dec % 1000 * 60 * 60 * 24 * 7 + "周 ";
-        } else if (dec % 1000 * 60 * 60 * 24 * 30 < 1) {
-            create_time = dec % 1000 * 60 * 60 * 24 * 30 + "月 ";
-        } else {
-            create_time = dec % 1000 * 60 * 60 * 24 * 30 * 12 + "年 ";
-        }
-        holder.hot_essay_time.setText(create_time);
+
+        holder.hot_essay_time.setText(item.getCreatedAt());
 
         holder.hot_essay_content.setText(item.getEssay_content());
         holder.hot_essay_emotion_count.setText(item.getEmotion_count() + "人");
@@ -110,9 +99,9 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.hot_essay_img.setHorizontalSpacing(2);
         holder.hot_essay_img.setVerticalSpacing(2);
         holder.hot_essay_img.setSingleImageSize(640, 400);
-        holder.hot_essay_img.loadImage(item.getEssay_images().size(), images -> {
+        holder.hot_essay_img.loadImage(item.getEssay_images().length, images -> {
             for (int i1 = 0; i1 < images.size(); i1++) {
-                Picasso.with(context).load(item.getEssay_images().get(i1))
+                Picasso.with(context).load(item.getEssay_images()[i1])
                         .placeholder(R.drawable.white_radius)
                         .error(R.drawable.error)
                         .into(images.get(i1));
@@ -122,7 +111,13 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         RxView.clicks(holder.hot_essay_good).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Good());
         RxView.clicks(holder.hot_essay_comment).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Comment());
         RxView.clicks(holder.hot_essay_share).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Share());
+        RxView.clicks(holder.hot_whole_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> Detail(i));
 
+    }
+
+    private void Detail(int i) {
+        Constant.ESSAY_DETAIL = items.get(i);
+        listener.Detail();
     }
 
     private void Share() {
@@ -154,7 +149,7 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ImageView hot_essay_btn_extra, hot_essay_source;
         FlowImageLayout hot_essay_img;
         LinearLayout hot_essay_good, hot_essay_comment, hot_essay_share;
-
+        RelativeLayout hot_whole_lay;
         public MyViewHolder(View view) {
             super(view);
             hot_author_name = (TextView) view.findViewById(R.id.hot_author_name);
@@ -175,6 +170,8 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             hot_essay_good = (LinearLayout) view.findViewById(R.id.hot_essay_good);
             hot_essay_comment = (LinearLayout) view.findViewById(R.id.hot_essay_comment);
             hot_essay_share = (LinearLayout) view.findViewById(R.id.hot_essay_share);
+
+            hot_whole_lay = (RelativeLayout) view.findViewById(R.id.hot_whole_lay);
         }
     }
 
@@ -183,4 +180,7 @@ public class HotNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // item.setIs_read(true);
     }
 
+    public  interface IHotNewsAdapter{
+         void Detail();
+    }
 }

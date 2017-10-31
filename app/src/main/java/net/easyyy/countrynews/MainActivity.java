@@ -25,8 +25,12 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.socks.library.KLog;
 
 import net.easyyy.countrynews.acticity.BaseActivity;
+import net.easyyy.countrynews.bean.HotNewsBean;
+import net.easyyy.countrynews.fragment.FragmentAdd;
+import net.easyyy.countrynews.fragment.FragmentDetail;
 import net.easyyy.countrynews.fragment.FragmentLogin;
 import net.easyyy.countrynews.fragment.FragmentMain;
+import net.easyyy.countrynews.fragment.FragmentRegister;
 import net.easyyy.countrynews.present.QueryPresent;
 import net.easyyy.countrynews.util.Constant;
 import net.easyyy.countrynews.util.Utils;
@@ -41,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import cn.bmob.v3.update.UpdateStatus;
 import cn.jpush.android.api.BasicPushNotificationBuilder;
@@ -183,7 +188,7 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
         //    builder.notificationDefaults = Notification.;  // 设置为铃声、震动、呼吸灯闪烁都要
         JPushInterface.setPushNotificationBuilder(6, builder);
 
-
+        //BmobUpdateAgent.initAppVersion(context);
         BmobUpdateAgent.setUpdateListener((updateStatus, updateInfo) -> {
             if (updateStatus == UpdateStatus.Yes) {//版本有更新
 
@@ -204,7 +209,7 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
                 KLog.v("查询出错或查询超时");
             }
         });
-       // BmobUpdateAgent.initAppVersion(context);
+
         BmobUpdateAgent.update(MainActivity.this);
         startLocation();
 
@@ -215,14 +220,19 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
         fragment1 = new FragmentLogin();
         cur_page = 1;
         cur_fragment = fragment1;
-        ft.show(fragment0);
+        ft.add(R.id.fragment_container, fragment1, PAGE_1);
+        ft.show(fragment1);
+        ft.commit();
 
-        main_header_lay.setVisibility(View.VISIBLE);
-        main_bottom_lay.setVisibility(View.VISIBLE);
+        main_header_lay.setVisibility(View.GONE);
+        main_bottom_lay.setVisibility(View.GONE);
+        selectTab(0);
 
         RxView.clicks(main_mine_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoMine());
         RxView.clicks(main_hot_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoMain());
         RxView.clicks(main_local_lay).throttleFirst(500, TimeUnit.MILLISECONDS).subscribe(s -> gotoLocal());
+
+
     }
 
     private void gotoLocal() {
@@ -270,7 +280,48 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
                 main_header_lay.setVisibility(View.GONE);
                 main_bottom_lay.setVisibility(View.GONE);
                 break;
-
+            case 2:
+                if (fragment2 == null) {
+                    fragment2 = new FragmentRegister();
+                }
+                if (!fragment2.isAdded()) {
+                    ft.add(R.id.fragment_container, fragment2, PAGE_2);
+                } else {
+                    fragment2.refreshState();
+                }
+                cur_fragment = fragment2;
+                ft.show(fragment2);
+                main_header_lay.setVisibility(View.GONE);
+                main_bottom_lay.setVisibility(View.GONE);
+                break;
+            case 3:
+                if (fragment3 == null) {
+                    fragment3 = new FragmentAdd();
+                }
+                if (!fragment3.isAdded()) {
+                    ft.add(R.id.fragment_container, fragment3, PAGE_3);
+                } else {
+                    fragment3.refreshState();
+                }
+                cur_fragment = fragment3;
+                ft.show(fragment3);
+                main_header_lay.setVisibility(View.GONE);
+                main_bottom_lay.setVisibility(View.GONE);
+                break;
+            case 4:
+                if (fragment4 == null) {
+                    fragment4 = new FragmentDetail();
+                }
+                if (!fragment4.isAdded()) {
+                    ft.add(R.id.fragment_container, fragment4, PAGE_4);
+                } else {
+                    fragment4.refreshState();
+                }
+                cur_fragment = fragment4;
+                ft.show(fragment4);
+                main_header_lay.setVisibility(View.GONE);
+                main_bottom_lay.setVisibility(View.GONE);
+                break;
         }
 
         ft.commitNowAllowingStateLoss();
@@ -367,26 +418,26 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
 
     @Override
     public void gotoMain() {
-        if (cur_fragment instanceof FragmentLogin) {
-            if (!sp.getBoolean(SetAlias, false)) {
-                KLog.v("MSG_SET_ALIAS");
-                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Constant.user_info.opt(Constant.CODE)));//设置推送别名
-            }
-
-        }
+//        if (cur_fragment instanceof FragmentLogin) {
+//            if (!sp.getBoolean(SetAlias, false)) {
+//                KLog.v("MSG_SET_ALIAS");
+//                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Constant.user_info.opt(Constant.CODE)));//设置推送别名
+//            }
+//
+//        }
         gotoPage(0);
         selectTab(0);
     }
 
     @Override
     public void gotoLogin() {
-        gotoPage(0);
+        gotoPage(1);
     }
 
 
     @Override
     public void gotoRegister() {
-        gotoPage(1);
+        gotoPage(2);
     }
 
     @Override
@@ -402,6 +453,16 @@ public class MainActivity extends BaseActivity implements IFragmentActivity,IVie
     @Override
     public void gotoProfile() {
 
+    }
+
+    @Override
+    public void gotoDetail() {
+        gotoPage(4);
+    }
+
+    @Override
+    public void gotoAdd() {
+        gotoPage(3);
     }
 
 

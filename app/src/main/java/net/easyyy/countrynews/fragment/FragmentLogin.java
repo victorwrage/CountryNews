@@ -27,6 +27,7 @@ import com.socks.library.KLog;
 import com.tencent.smtt.sdk.QbSdk;
 
 import net.easyyy.countrynews.R;
+import net.easyyy.countrynews.bean.UserBean;
 import net.easyyy.countrynews.present.QueryPresent;
 import net.easyyy.countrynews.service.AdvanceLoadX5Service;
 import net.easyyy.countrynews.util.Constant;
@@ -42,6 +43,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import okhttp3.ResponseBody;
 
@@ -146,7 +149,16 @@ public class FragmentLogin extends BaseFragment implements IUserView {
                 return;
             }
             showWaitDialog("正在登录");
-            present.initRetrofit(Constant.URL_SHANGTONGTIANXIA, false);
+            BmobUser bmobUser = UserBean.getCurrentUser(getContext());
+            if(bmobUser != null){
+                hideWaitDialog();
+                listener.gotoMain();
+            }else{
+                hideWaitDialog();
+                login_auto_activity.setVisibility(View.GONE);
+                //缓存用户对象为空时， 可打开用户注册界面…
+            }
+          //  present.initRetrofit(Constant.URL_SHANGTONGTIANXIA, false);
            /* present.QueryLogin(util.UrlEnco(Constant.WDT_SECRET), login_user_et.getText().toString().trim(),
                     util.getMD5(login_password_et.getText().toString().trim()));*/
         }else{
@@ -202,7 +214,7 @@ public class FragmentLogin extends BaseFragment implements IUserView {
     }
 
     private void Login() {
-        listener.gotoMain();
+
 
         if (!util.isNetworkConnected(getContext())) {
             VToast.toast(getContext(), "没有网络连接");
@@ -213,14 +225,30 @@ public class FragmentLogin extends BaseFragment implements IUserView {
         } else if (login_password_et.getText().toString().trim().equals("")) {
             VToast.toast(getContext(), "请输入密码");
         } else {
+            showWaitDialog("正在登录");
+            UserBean bu2 = new UserBean();
+            bu2.setUsername(login_user_et.getText().toString().trim());
+            bu2.setPassword(login_password_et.getText().toString().trim());
+            bu2.login(getContext(), new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("user_name",login_user_et.getText().toString());
+                    editor.putString("user_pw",login_password_et.getText().toString());
+                    editor.putBoolean("remember",login_remember_btn.isChecked());
+                    editor.putBoolean("auto_login",login_auto_btn.isChecked());
+                    editor.commit();
+                    listener.gotoMain();
+                    hideWaitDialog();
+                }
 
-           // showWaitDialog("正在登录");
-          //  present.initRetrofit(Constant.URL_SHANGTONGTIANXIA, false);
-           /* present.QueryLogin(util.UrlEnco(Constant.WDT_SECRET), login_user_et.getText().toString().trim(),
-                    util.getMD5(login_password_et.getText().toString().trim()));*/
+                @Override
+                public void onFailure(int i, String s) {
+                    VToast.toast(getContext(),s);
+                    hideWaitDialog();
+                }
+            });
         }
-
-
     }
 
 

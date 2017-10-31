@@ -227,7 +227,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    AlertDialog dialog;
+
     protected void showDialog(int type, String title, String tip) {
         new MaterialDialog.Builder(getContext())
                 .title(title)
@@ -247,7 +247,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void confirm(int type) {
-        dialog.dismiss();
+
     }
     @Override
     public void onAttach(Context context) {

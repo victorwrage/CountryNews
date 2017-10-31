@@ -3,6 +3,8 @@ package net.easyyy.countrynews.util;
 import com.baidu.location.BDLocation;
 
 
+import net.easyyy.countrynews.bean.HotNewsBean;
+
 import org.json.JSONObject;
 import java.util.HashMap;
 
@@ -28,6 +30,7 @@ public class Constant {
 
 
     public static final String MESSAGE_USER_NAME = "5234TSGF2";//账号
+    public static HotNewsBean ESSAY_DETAIL = null;
     public static String MESSAGE_PASSWORD = "852741";//密码
 
 

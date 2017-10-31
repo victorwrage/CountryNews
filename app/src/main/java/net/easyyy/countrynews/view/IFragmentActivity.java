@@ -15,4 +15,8 @@ public interface IFragmentActivity {
     void gotoFeedBack();
 
     void gotoProfile();
+
+    void gotoDetail();
+
+    void gotoAdd();
 }

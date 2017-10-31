@@ -14,8 +14,6 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-
-
         <RelativeLayout
             android:id="@+id/main_header_lay"
             android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package net.easyyy.countrynews.bean;
 import java.util.ArrayList;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobPointer;
 
 /**
  * Info:
@@ -20,12 +21,97 @@ public class HotNewsBean  extends BmobObject{
     String essay_title;
     String essay_extra;
 
+
+    String type;
+    String content;
+    String desc;
+    String cover;
+
+    public String getArticle() {
+        return article;
+    }
+
+    public void setArticle(String article) {
+        this.article = article;
+    }
+
+    String article;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getM_id() {
+        return m_id;
+    }
+
+    public void setM_id(String m_id) {
+        this.m_id = m_id;
+    }
+
+    String url;
+    String title;
+    String m_id;
+
+
     int essay_type_extra;
 
     Long emotion_count;
     Long comment_count;
     Long look_count;
+    BmobPointer essay_author;
 
+    public BmobPointer getEssay_author() {
+        return essay_author;
+    }
+
+    public void setEssay_author(BmobPointer essay_author) {
+        this.essay_author = essay_author;
+    }
     public String getEssay_extra() {
         return essay_extra;
     }
@@ -74,11 +160,11 @@ public class HotNewsBean  extends BmobObject{
         this.share_count = share_count;
     }
 
-    public ArrayList<String> getEssay_tags() {
+    public String[] getEssay_tags() {
         return essay_tags;
     }
 
-    public void setEssay_tags(ArrayList<String> essay_tags) {
+    public void setEssay_tags(String[] essay_tags) {
         this.essay_tags = essay_tags;
     }
 
@@ -100,8 +186,8 @@ public class HotNewsBean  extends BmobObject{
 
     Long share_count;
 
-    ArrayList<String> essay_images;
-    ArrayList<String> essay_tags;
+    String[] essay_images;
+    String[] essay_tags;
     Boolean is_read;
     Boolean is_good;
 
@@ -153,11 +239,11 @@ public class HotNewsBean  extends BmobObject{
         this.essay_title = essay_title;
     }
 
-    public ArrayList<String> getEssay_images() {
+    public String[] getEssay_images() {
         return essay_images;
     }
 
-    public void setEssay_images(ArrayList<String> essay_images) {
+    public void setEssay_images(String[] essay_images) {
         this.essay_images = essay_images;
     }
 }

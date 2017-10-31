@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
 
@@ -135,6 +136,7 @@ public class FragmentSetting extends BaseFragment {
 */
         Constant.user_info = null;
         Constant.MESSAGE_UPDATE_TIP = "";
+        BmobUser.logOut(getContext());
         listener.gotoLogin();
     }
 

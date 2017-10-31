@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import net.easyyy.countrynews.model.IRequestMode;
-import net.easyyy.countrynews.model.converter.CustomGsonConverter;
 import net.easyyy.countrynews.util.Constant;
 import net.easyyy.countrynews.view.IUserView;
 import net.easyyy.countrynews.view.IView;
@@ -154,7 +153,7 @@ public class QueryPresent implements IRequestPresent {
         try {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(url)
-                    .addConverterFactory(CustomGsonConverter.create())
+                    .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(new OkHttpClient.Builder()
                             .addNetworkInterceptor(

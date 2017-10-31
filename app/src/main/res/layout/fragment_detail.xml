@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="45dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tbsContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <net.easyyy.countrynews.customView.RecyclerViewWithEmpty
+            android:id="@+id/comment_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/shangtongtianx_edit_bg"/>
+
+        <include
+            android:id="@+id/empty_lay2"
+            layout="@layout/comment_empty_lay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/empty_lay"
+        layout="@layout/empty_lay"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent"
+        android:visibility="visible" />
+
+    <include
+        android:id="@+id/webview_header"
+        layout="@layout/header_lay"
+        android:visibility="visible" />
+</RelativeLayout>
